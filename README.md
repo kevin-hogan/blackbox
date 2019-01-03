@@ -1,6 +1,6 @@
 Development notes:
 
-Run "docker-compose run blackbox /bin/bash" to start bash in container
+Run "docker-compose run -p 3000:3000 blackbox /bin/bash" to start bash in container
 
 In /src, start Ryu controller with "xterm -e ./ryu-manager --verbose --enable-debugger simple_switch_13.py &"
 

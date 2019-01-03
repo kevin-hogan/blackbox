@@ -2,6 +2,8 @@ Development notes:
 
 Run "docker-compose run blackbox /bin/bash" to start bash in container
 
+In /src, start Ryu controller with "xterm -e ./ryu-manager --verbose --enable-debugger simple_switch_13.py &"
+
 Run "service openvswitch-switch start" to start switch service
 
 Then, running "mn --topo single,3 --mac --controller remote --switch ovsk" will start mininet.

@@ -1,11 +1,23 @@
-Development notes:
+UNDER CONSTRUCTION
 
-Run "docker-compose run -p 3000:3000 blackbox /bin/bash" to start bash in container
+Prerequisites:
 
-Start Ryu controller with "xterm -e python -m ptvsd --host 0.0.0.0 --port 3000 ./usr/local/bin/ryu-manager --verbose --enable-debugger src/simple_switch_13.py &". Then start debugging in Visual Studio Code with the Python: Remote Debug configuration. Optionally add --wait just after the port number if you want to start the debug from the beginning of executing the program.
+Install both Docker and docker-compose. Start up Docker. Build the Docker image by running "docker-compose build" in the top-level directory (where docker-compose.yml is located).
 
-Run "service openvswitch-switch start" to start switch service
+Also, make sure that you have an X server running on your machine (e.g., VcXsrv or Xming). This is necessary because Blackbox will open two xterm windows: one for the Ryu controller and one for the Mininet CLI.
 
-Then, running "mn --topo single,3 --mac --controller remote --switch ovsk" will start mininet.
+Visual Studio Code is necessary for debugging.
 
-For XWindows apps to work, you need to have an xserver application (e.g., Xming) running on your host
+To run Blackbox:
+
+Simply run "docker-compose up". This will start the Ryu SDN controller and the Mininet CLI.
+
+If you would like to debug the Ryu controller, you'll need to add the -d option to the startblackbox command in docker-compose.yml. Then run "docker-compose up" to start. Once Blackbox is started, open up the project in Visual Studio Code. The "Python: Remote Debug" configuration is set up to debug the Ryu controller. Run this configuration and see that the debugger attaches, which will be confirmed visually in the Visual Studio Code UI. To see if everything works, try setting a breakpoint in the packet-in handler of your Ryu application (e.g., simple_switch_13.py).
+
+Upcoming enhancements:
+
+Allow for customizing which Ryu application is run without having to modify the startblackbox script.
+
+Notes:
+
+If modifying the startblackbox script on windows, note that it needs to be saved with LF line endings. Otherwise, you'll end up with an error while running the script: "standard_init_linux.go:190: exec user process caused 'no such file or directory'".

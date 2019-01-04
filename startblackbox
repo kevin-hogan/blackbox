@@ -1,0 +1,25 @@
+#!/bin/bash
+
+debug_mode=false
+while getopts ":d" opt; do
+  case ${opt} in
+    d )
+      debug_mode=true
+      ;;
+    \? )
+      echo "Invalid option. Usage: startblackbox [-d]"
+      exit 1
+      ;;
+  esac
+done
+
+comm="xterm -e "
+if [ "$debug_mode" = true ] ; then
+    comm+="python -m ptvsd --host 0.0.0.0 --port 3000 "
+fi
+comm+="./usr/local/bin/ryu-manager --verbose --enable-debugger src/simple_switch_13.py"
+$comm &
+
+service openvswitch-switch start
+
+xterm -e mn --topo single,3 --mac --controller remote --switch ovsk

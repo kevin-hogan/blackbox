@@ -22,4 +22,4 @@ $comm &
 
 service openvswitch-switch start
 
-xterm -e mn --topo single,3 --mac --controller remote --switch ovsk
+xterm -e python2 src/start_mininet.py

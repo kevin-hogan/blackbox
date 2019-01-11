@@ -14,19 +14,23 @@ class SingleSwitchTopo(Topo):
             host = self.addHost('h%s' % (h + 1))
             self.addLink(host, switch)
 
-def simpleTest():
-    topo = SingleSwitchTopo(n=4)
+def createNetwork():
+    topo = SingleSwitchTopo(n=3)
     net = Mininet(topo=topo, controller=None)
     controller =net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
     controller.start()
     net.start()
+    return net
+
+def testConnection(net):
     print("Dumping host connections")
     dumpNodeConnections(net.hosts)
     print("Testing network connectivity")
     net.pingAll()
-    CLI(net)
-    net.stop()
 
 if __name__ == '__main__':
     setLogLevel('info')
-    simpleTest()
+    net = createNetwork()
+    testConnection(net)
+    CLI(net)
+    net.stop()

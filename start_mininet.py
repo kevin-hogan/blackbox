@@ -6,18 +6,20 @@ from mininet.util import dumpNodeConnections
 from mininet.log import setLogLevel
 from mininet.node import RemoteController
 from mininet.cli import CLI
+from mininet.link import Intf
 
 class SingleSwitchTopo(Topo):
-    def build(self, n=2):
+    def build(self, n):
         switch = self.addSwitch('s1')
         for h in range(n):
             host = self.addHost('h%s' % (h + 1))
             self.addLink(host, switch)
 
 def createNetwork():
-    topo = SingleSwitchTopo(n=3)
+    topo = SingleSwitchTopo(2)
     net = Mininet(topo=topo, controller=None)
-    controller =net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
+    net.addNAT("snort").configDefault()
+    controller = net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
     controller.start()
     net.start()
     return net

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Snort rule configuration
+
+cp /src/snort/snort.conf /etc/snort
+cp /src/snort/blackbox.rules /etc/snort/rules
+
+# Starting Ryu controller
+
 debug_mode=false
 while getopts ":d" opt; do
   case ${opt} in
@@ -17,9 +24,14 @@ comm="xterm -e "
 if [ "$debug_mode" = true ] ; then
     comm+="python -m ptvsd --host 0.0.0.0 --port 3000 "
 fi
-comm+="./usr/local/bin/ryu-manager --verbose --enable-debugger src/simple_switch_13.py"
+comm+="./usr/local/bin/ryu-manager --verbose --enable-debugger src/simple_switch_snort.py"
 $comm &
 
-service openvswitch-switch start
+# Starting Mininet
 
-xterm -e python2 src/start_mininet.py
+service openvswitch-switch start
+xterm -e python2 src/start_mininet.py &
+
+# Starting bash
+
+xterm -e /bin/bash

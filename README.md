@@ -1,6 +1,6 @@
 UNDER CONSTRUCTION!
 
-## Prerequisites
+## Setup
 
 Install both Docker and docker-compose. Start up Docker. Build the Docker image by running `docker-compose build` in the top-level directory (where docker-compose.yml is located).
 
@@ -8,7 +8,7 @@ Also, make sure that you have an X server running on your machine (e.g., VcXsrv 
 
 Visual Studio Code is necessary for debugging.
 
-## To run Blackbox
+## Running Blackbox
 
 Simply run `docker-compose up`. This will start the Ryu SDN controller, the Mininet CLI, and a bash window for convenience.
 

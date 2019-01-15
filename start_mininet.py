@@ -8,6 +8,8 @@ from mininet.node import RemoteController
 from mininet.cli import CLI
 from mininet.link import Intf
 
+SNORT_HOST_NAME = "snort"
+
 class SingleSwitchTopo(Topo):
     def build(self, n):
         switch = self.addSwitch('s1')
@@ -18,7 +20,7 @@ class SingleSwitchTopo(Topo):
 def createNetwork():
     topo = SingleSwitchTopo(2)
     net = Mininet(topo=topo, controller=None)
-    net.addNAT("snort").configDefault()
+    net.addNAT(SNORT_HOST_NAME).configDefault()
     controller = net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
     controller.start()
     net.start()
@@ -34,5 +36,10 @@ if __name__ == '__main__':
     setLogLevel('info')
     net = createNetwork()
     testConnection(net)
+    net.get(SNORT_HOST_NAME).cmd("ifconfig snort-eth0 promisc")
+    # The -q option is important below. Seending the command to the node
+    # this way fails when it has output.
+    net.get(SNORT_HOST_NAME).cmd("sudo snort -q -i snort-eth0 -c /etc/snort/snort.conf -A fast &")
+    net.get("h1").cmd("python -m http.server 80 &")
     CLI(net)
     net.stop()

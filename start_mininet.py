@@ -39,7 +39,7 @@ if __name__ == '__main__':
     net.get(SNORT_HOST_NAME).cmd("ifconfig snort-eth0 promisc")
     # The -q option is important below. Seending the command to the node
     # this way fails when it has output.
-    net.get(SNORT_HOST_NAME).cmd("sudo snort -q -i snort-eth0 -c /etc/snort/snort.conf -A fast &")
+    net.get(SNORT_HOST_NAME).cmd("snort -q -i snort-eth0 -c /etc/snort/snort.conf -A unsock &")
     net.get("h1").cmd("python -m http.server 80 &")
     CLI(net)
     net.stop()

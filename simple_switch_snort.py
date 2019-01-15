@@ -39,8 +39,8 @@ class SimpleSwitchSnort(app_manager.RyuApp):
         self.snort_port = 3
         self.mac_to_port = {}
 
+        snortlib.SOCKFILE = "/var/log/snort/snort_alert"
         socket_config = {'unixsock': True}
-
         self.snort.set_config(socket_config)
         self.snort.start_socket_server()
 
@@ -69,7 +69,7 @@ class SimpleSwitchSnort(app_manager.RyuApp):
     def _dump_alert(self, ev):
         msg = ev.msg
 
-        print('alertmsg: %s' % ''.join(msg.alertmsg))
+        print('alertmsg: %s' % msg.alertmsg[0].decode("utf-8").replace("\x00", ""))
 
         self.packet_print(msg.pkt)
 

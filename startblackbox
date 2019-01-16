@@ -24,7 +24,7 @@ comm="xterm -e "
 if [ "$debug_mode" = true ] ; then
     comm+="python -m ptvsd --host 0.0.0.0 --port 3000 "
 fi
-comm+="./usr/local/bin/ryu-manager --verbose --enable-debugger src/simple_switch_snort.py"
+comm+="./usr/local/bin/ryu-manager --verbose --enable-debugger src/snort_learning_switch.py"
 $comm &
 
 # Starting Mininet

@@ -12,7 +12,7 @@ Visual Studio Code is necessary for debugging.
 
 Simply run `docker-compose up`. This will start the Ryu SDN controller, the Mininet CLI, and a bash window for convenience.
 
-If you would like to debug the Ryu controller, you'll need to add the `-d` option to the `startblackbox` command in `docker-compose.yml`. Then run `docker-compose up` to start. Once Blackbox is started, open up the project in Visual Studio Code. The `Python: Remote Debug` configuration is set up to debug the Ryu controller. Run this configuration and see that the debugger attaches, which will be confirmed visually in the Visual Studio Code UI. To see if everything works, try setting a breakpoint in the packet-in handler of your Ryu application (e.g., `simple_switch_snort.py`).
+If you would like to debug the Ryu controller, you'll need to add the `-d` option to the `startblackbox` command in `docker-compose.yml`. Then run `docker-compose up` to start. Once Blackbox is started, open up the project in Visual Studio Code. The `Python: Remote Debug` configuration is set up to debug the Ryu controller. Run this configuration and see that the debugger attaches, which will be confirmed visually in the Visual Studio Code UI. To see if everything works, try setting a breakpoint in the packet-in handler of your Ryu application (e.g., `snort_learning_switch.py`).
 
 ## Network topology
 

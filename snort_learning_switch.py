@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import array
+
 from ryu.base import app_manager
 from ryu.controller import ofp_event
 from ryu.controller.handler import CONFIG_DISPATCHER, MAIN_DISPATCHER
 from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_3
-from ryu.lib.packet import packet
-from ryu.lib.packet import ethernet
-from ryu.lib.packet import ether_types
+from ryu.lib.packet import packet, ether_types, ethernet, ipv4
 from ryu.lib import snortlib
 
 
@@ -43,10 +43,20 @@ class SnortLearningSwitch(app_manager.RyuApp):
         self.snort.set_config(socket_config)
         self.snort.start_socket_server()
 
+        self.datapath = None
+
     @set_ev_cls(snortlib.EventAlert, MAIN_DISPATCHER)
-    def _dump_alert(self, ev):
+    def dump_alert(self, ev):
+        parser = self.datapath.ofproto_parser
         msg = ev.msg
         print('alertmsg: %s' % msg.alertmsg[0].decode("utf-8").replace("\x00", ""))
+
+        # Add flow to drop packets from host that caused alert
+        pkt = packet.Packet(array.array('B', msg.pkt))
+        protocol = pkt.get_protocol(ipv4.ipv4)
+        match = parser.OFPMatch(ipv4_src=protocol.src, eth_type=0x800)
+        self.add_flow(self.datapath, 2, match, [])
+
 
     @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
     def switch_features_handler(self, ev):
@@ -70,8 +80,7 @@ class SnortLearningSwitch(app_manager.RyuApp):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
-        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS,
-                                             actions)]
+        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
         if buffer_id:
             mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id,
                                     priority=priority, match=match,
@@ -89,6 +98,7 @@ class SnortLearningSwitch(app_manager.RyuApp):
             self.logger.debug("packet truncated: only %s of %s bytes",
                               ev.msg.msg_len, ev.msg.total_len)
         msg = ev.msg
+        self.datapath = msg.datapath
         datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser

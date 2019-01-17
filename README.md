@@ -22,7 +22,7 @@ The network topology is configured through the Mininet Python API in `start_mini
 
 This tool is currently configured to work with Snort IDS. For testing purposes, I've created a very simple rule in the `snort/blackbox.rules` file that will throw an alert on detecting any packet with "POST" in it.
 
-To see this in action, start up Blackbox, then type `h2 wget --post-data "qwerty" h1` in the Mininet CLI. You'll then see the "Under Attack!" alert message appear in the Ryu console as well as a printout of the packet that triggered the alert.
+To see this in action, start up Blackbox, then type `h2 wget --post-data "qwerty" h1` in the Mininet CLI. You'll then see the "Under Attack!" alert message appear in the Ryu console as well as a printout of the packet that triggered the alert. In addition to printing the alert, the application will respond by installing a flow that drops packets originating from the IP that caused the alert. See `dump_alert` in `snort_learning_switch.py`.
 
 ## Upcoming enhancements
 

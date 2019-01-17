@@ -1,1 +1,1 @@
-alert tcp any any -> any any (msg: "Under Attack";content:"POST";sid:1000003;)
+alert tcp any any -> any 22 (msg: "SSH attempt detected"; sid:10000001; rev:001; )

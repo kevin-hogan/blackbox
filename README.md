@@ -20,9 +20,9 @@ The network topology is configured through the Mininet Python API in `start_mini
 
 ## Snort integration
 
-This tool is currently configured to work with Snort IDS. For testing purposes, I've created a very simple rule in the `snort/blackbox.rules` file that will throw an alert on detecting any packet with "POST" in it.
+This tool is currently configured to work with Snort IDS. For testing purposes, I've created a very simple rule in the `snort/blackbox.rules` file that will throw an alert on detecting any attempt to SSH.
 
-To see this in action, start up Blackbox, then type `h2 wget --post-data "qwerty" h1` in the Mininet CLI. You'll then see the "Under Attack!" alert message appear in the Ryu console as well as a printout of the packet that triggered the alert. In addition to printing the alert, the application will respond by installing a flow that drops packets originating from the IP that caused the alert. See `dump_alert` in `snort_learning_switch.py`.
+To see this in action, start up Blackbox, then type `h2 wget h1` in the Mininet CLI. This should retrieve an `index.html` file just fine, as a simple webserver is running on `h1`. If you then run `h2 ssh h1`, you'll see the "SSH Attempt Detected" alert message appear in the Ryu console. In addition to printing the alert, the application will respond by installing a flow that drops all packets originating from the IP that caused the alert (so a follow-up run of `h2 wget h1` will fail). See `dump_alert` in `snort_learning_switch.py` for the implementation.
 
 ## Upcoming enhancements
 

@@ -6,16 +6,17 @@ from mininet.util import dumpNodeConnections
 from mininet.log import setLogLevel
 from mininet.node import RemoteController
 from mininet.cli import CLI
-from mininet.link import Intf
+from mininet.link import TCLink
 
 SNORT_HOST_NAME = "snort"
 
 class SingleSwitchTopo(Topo):
     def build(self, n):
         switch = self.addSwitch('s1')
+        link_opts = dict(cls=TCLink, bw=100, delay='5ms', max_queue_size=1000, use_htb=True)
         for h in range(n):
             host = self.addHost('h%s' % (h + 1))
-            self.addLink(host, switch)
+            self.addLink(host, switch, **link_opts)
 
 def createNetwork():
     topo = SingleSwitchTopo(2)

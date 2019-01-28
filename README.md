@@ -16,13 +16,13 @@ If you would like to debug the Ryu controller, you'll need to add the `-d` optio
 
 ## Network topology
 
-The network topology is configured through the Mininet Python API in `start_mininet.py`. Currently, it creates one webserver host (`h1`), one regular host (`h2`), and one Snort IDS host (`snort`). See below for details on Snort.
+The network topology is configured through the Mininet Python API in `start_mininet.py`. Currently, it creates one webserver host (`webserver`), one client host (`client1`), and one Snort IDS host (`snort`). See below for details on Snort.
 
 ## Snort integration
 
-This tool is currently configured to work with Snort IDS. For testing purposes, I've created a very simple rule in the `snort/blackbox.rules` file that will throw an alert on detecting any attempt to SSH.
+This tool is currently configured to work with Snort IDS. For testing purposes, I've created a very simple rule in the `snort/blackbox.rules` file that will throw an alert on detecting any SSH attempt on the webserver.
 
-To see this in action, start up Blackbox, then type `h2 wget h1` in the Mininet CLI. This should retrieve an `index.html` file just fine, as a simple webserver is running on `h1`. If you then run `h2 ssh h1`, you'll see the "SSH Attempt Detected" alert message appear in the Ryu console. In addition to printing the alert, the application will respond by installing a flow that drops all packets originating from the IP that caused the alert (so a follow-up run of `h2 wget h1` will fail). See `dump_alert` in `snort_learning_switch.py` for the implementation.
+To see this in action, start up Blackbox, then type `client1 wget webserver` in the Mininet CLI. This should retrieve an `index.html` file just fine. If you then run `client1 ssh webserver`, you'll see the "SSH Attempt Detected" alert message appear in the Ryu console. In addition to printing the alert, the application will respond by installing a flow that drops all packets originating from the IP that caused the alert (so a follow-up run of `client1 wget webserver` will fail). See `dump_alert` in `snort_learning_switch.py` for the implementation.
 
 ## Upcoming enhancements
 

@@ -9,19 +9,23 @@ from mininet.cli import CLI
 from mininet.link import TCLink
 
 SNORT_HOST_NAME = "snort"
+WEBSERVER_HOST_NAME = "webserver"
 
 class SingleSwitchTopo(Topo):
-    def build(self, n):
+    def build(self, numClients):
         switch = self.addSwitch('s1')
         link_opts = dict(cls=TCLink, bw=100, delay='5ms', max_queue_size=1000, use_htb=True)
-        for h in range(n):
-            host = self.addHost('h%s' % (h + 1))
+        for num in range(numClients):
+            host = self.addHost('client%s' % (num + 1))
             self.addLink(host, switch, **link_opts)
+        snort = self.addHost(SNORT_HOST_NAME, inNamespace=False)
+        self.addLink(snort, switch)
+        webserver = self.addHost(WEBSERVER_HOST_NAME, inNamespace=False)
+        self.addLink( webserver, switch )
 
 def createNetwork():
-    topo = SingleSwitchTopo(2)
+    topo = SingleSwitchTopo(1)
     net = Mininet(topo=topo, controller=None)
-    net.addNAT(SNORT_HOST_NAME).configDefault()
     controller = net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
     controller.start()
     net.start()
@@ -38,9 +42,9 @@ if __name__ == '__main__':
     net = createNetwork()
     testConnection(net)
     net.get(SNORT_HOST_NAME).cmd("ifconfig snort-eth0 promisc")
-    # The -q option is important below. Seending the command to the node
+    # The -q option, which silences output, is important below. Sending the command to the node
     # this way fails when it has output.
     net.get(SNORT_HOST_NAME).cmd("snort -q -i snort-eth0 -c /etc/snort/snort.conf -A unsock &")
-    net.get("h1").cmd("python -m http.server 80 &")
+    net.get(WEBSERVER_HOST_NAME).cmd("socat TCP4-LISTEN:80,fork TCP4:webserver:8080 &")
     CLI(net)
     net.stop()

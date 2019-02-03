@@ -19,9 +19,9 @@ class SingleSwitchTopo(Topo):
             host = self.addHost('client%s' % (num + 1))
             self.addLink(host, switch, **link_opts)
         snort = self.addHost(SNORT_HOST_NAME, inNamespace=False)
-        self.addLink(snort, switch)
+        self.addLink(snort, switch, **link_opts)
         webserver = self.addHost(WEBSERVER_HOST_NAME, inNamespace=False)
-        self.addLink( webserver, switch )
+        self.addLink(webserver, switch, **link_opts)
 
 def createNetwork():
     topo = SingleSwitchTopo(1)

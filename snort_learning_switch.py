@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import array
+import requests
 
 from ryu.base import app_manager
 from ryu.controller import ofp_event
@@ -50,6 +51,10 @@ class SnortLearningSwitch(app_manager.RyuApp):
         parser = self.datapath.ofproto_parser
         msg = ev.msg
         print('alertmsg: %s' % msg.alertmsg[0].decode("utf-8").replace("\x00", ""))
+
+        # Ping webserver for host-level actions.
+        data = {'alert': 123}
+        requests.post(url = "http://webserver:5000/alerts", data = data)
 
         # Add flow to drop packets from host that caused alert
         pkt = packet.Packet(array.array('B', msg.pkt))

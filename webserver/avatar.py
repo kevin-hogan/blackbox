@@ -1,7 +1,10 @@
+import sys
 from flask import Flask
+from flask import request
 app = Flask(__name__)
 
-@app.route("/")
+@app.route('/alerts', methods = ['POST'])
 def hello():
-    print("here!")
-    return "Hello World!"
+    data = request.form
+    print(str(data), file=sys.stderr)
+    return "Alert Successful!"

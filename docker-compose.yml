@@ -11,5 +11,7 @@ services:
     ports:
       - "3000:3000"
   webserver:
-    image: python:3
-    command: python -m http.server 8080
+    build: webserver
+    volumes:
+      - ./webserver:/src
+    command: ./src/startwebserver

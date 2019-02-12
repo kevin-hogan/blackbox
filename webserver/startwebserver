@@ -1,0 +1,4 @@
+#!/bin/bash
+
+python -m http.server 8080 &
+FLASK_APP=/src/avatar.py flask run -p 5000 --host=0.0.0.0

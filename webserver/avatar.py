@@ -1,10 +1,21 @@
 import sys
-from flask import Flask
-from flask import request
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
+homepage = "index.html"
+
 @app.route('/alerts', methods = ['POST'])
-def hello():
+def alerts():
     data = request.form
-    print(str(data), file=sys.stderr)
-    return "Alert Successful!"
+    message = data.get("alert")
+    if message == "SSH attempt detected":
+        global homepage
+        homepage = "alternate_index.html"
+    elif message == "ICMP":
+        # TODO Add countermeasure for ICMP packet alert
+        pass
+    return ""
+
+@app.route('/')
+def get_homepage():
+    return render_template(homepage)

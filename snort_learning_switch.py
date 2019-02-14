@@ -50,11 +50,12 @@ class SnortLearningSwitch(app_manager.RyuApp):
     def dump_alert(self, ev):
         parser = self.datapath.ofproto_parser
         msg = ev.msg
-        print('alertmsg: %s' % msg.alertmsg[0].decode("utf-8").replace("\x00", ""))
+        msg_string = msg.alertmsg[0].decode("utf-8").replace("\x00", "")
+        print('alertmsg: %s' % msg_string)
 
         # Ping webserver for host-level actions.
-        data = {'alert': 123}
-        requests.post(url = "http://webserver:5000/alerts", data = data)
+        data = {'alert': msg_string}
+        requests.post(url = "http://webserver:8080/alerts", data = data)
 
         # Add flow to drop packets from host that caused alert
         pkt = packet.Packet(array.array('B', msg.pkt))

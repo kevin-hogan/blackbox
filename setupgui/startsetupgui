@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rsync -a /setupgui/ /setupgui-build/
+cd /setupgui-build
+npm install
+npm run buildDev
+npm start

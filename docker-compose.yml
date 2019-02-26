@@ -15,3 +15,10 @@ services:
     volumes:
       - ./webserver:/src
     command: ./src/startwebserver
+  setupgui:
+    build: setupgui
+    volumes:
+      - ./setupgui:/setupgui
+    command: /bin/bash
+    ports:
+      - "8080:8080"

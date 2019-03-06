@@ -1,5 +1,6 @@
-#!/usr/bin/python                                                                            
-                                                                                             
+#!/usr/bin/python
+
+import json
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.util import dumpNodeConnections
@@ -23,8 +24,8 @@ class SingleSwitchTopo(Topo):
         webserver = self.addHost(WEBSERVER_HOST_NAME, inNamespace=False)
         self.addLink(webserver, switch, **link_opts)
 
-def createNetwork():
-    topo = SingleSwitchTopo(1)
+def createNetwork(numClients):
+    topo = SingleSwitchTopo(numClients)
     net = Mininet(topo=topo, controller=None)
     controller = net.addController('c0', controller=RemoteController, ip="127.0.0.1", port=6633)
     controller.start()
@@ -38,8 +39,11 @@ def testConnection(net):
     net.pingAll()
 
 if __name__ == '__main__':
+    with open('/src/conf.example.json') as f:
+        config = json.load(f)
+
     setLogLevel('info')
-    net = createNetwork()
+    net = createNetwork(len(config["clients"]))
     testConnection(net)
     net.get(SNORT_HOST_NAME).cmd("ifconfig snort-eth0 promisc")
     # The -q option, which silences output, is important below. Sending the command to the node

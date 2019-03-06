@@ -8,7 +8,7 @@ homepage = "index.html"
 def alerts():
     data = request.form
     message = data.get("alert")
-    if message == "SSH attempt detected":
+    if message == "ssh_attempt":
         global homepage
         homepage = "alternate_index.html"
     elif message == "ICMP":

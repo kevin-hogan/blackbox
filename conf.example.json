@@ -1,0 +1,20 @@
+{
+    "clients": [
+        {
+            "requestScript": "benign"
+        },
+        {
+            "requestScript": "benign"
+        }
+    ],
+    "servers": [
+        {
+            "countermeasures": [
+                {
+                    "id": 123,
+                    "responseToAlert": 456
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+key="$1"
+case $key in
+    -s|--server_ip)
+    SERVER_IP="$2"
+    ;;
+esac
+
+while true; do
+    ssh $SERVER_IP
+    sleep 5
+done

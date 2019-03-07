@@ -1,10 +1,12 @@
 {
     "clients": [
         {
-            "requestScript": "benign"
+            "name": "client1",
+            "request_script": "benign"
         },
         {
-            "requestScript": "benign"
+            "name": "client2",
+            "request_script": "ssh_attempt"
         }
     ],
     "servers": [
@@ -12,7 +14,7 @@
             "countermeasures": [
                 {
                     "id": 123,
-                    "responseToAlert": 456
+                    "response_to_alert": 456
                 }
             ]
         }

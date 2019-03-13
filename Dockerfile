@@ -8,8 +8,11 @@ RUN apt-get update && apt-get install -y \
     sudo \
     xterm \
     mininet \
-    snort
-RUN pip install --no-cache \
+    snort \
+    python-pip
+RUN python -m pip install --no-cache \
     ptvsd \
     ryu
+RUN python2 -m pip install --no-cache \
+    requests
 RUN touch /etc/network/interfaces

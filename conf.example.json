@@ -6,15 +6,18 @@
         },
         {
             "name": "client2",
-            "request_script": "ssh_attempt"
+            "request_script": "ssh"
         }
     ],
     "servers": [
         {
+            "name":"webserver",
             "countermeasures": [
                 {
-                    "id": 123,
-                    "response_to_alert": 456
+                    "name": "swap_homepage",
+                    "response_to_alerts": [
+                        "ssh_attempt"
+                    ]
                 }
             ]
         }

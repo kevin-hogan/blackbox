@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import json
+import requests
 from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.util import dumpNodeConnections
@@ -49,6 +50,9 @@ def startServicesOnHosts(net, config):
     for client in config["clients"]:
         net.get(client["name"]).cmd("./src/client_scripts/" + client["request_script"] \
             + " --server_ip " + webserver_ip + " &")
+    
+    for server in config["servers"]:
+        requests.post(url = "http://" + server["name"] + ":8080/config", json = server)
 
 if __name__ == '__main__':
     with open('/src/conf.example.json') as f:

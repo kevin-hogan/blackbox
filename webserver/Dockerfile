@@ -7,4 +7,5 @@ RUN apt-get update && apt-get install -y \
     libncurses5:i386 \
     libstdc++6:i386 \
     libc6-dev-i386
+RUN pip install pexpect
 ENV PATH="/src/reconfig/bin:${PATH}"

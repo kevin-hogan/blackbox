@@ -9,18 +9,21 @@ services:
     command: ./src/startblackbox
     volumes:
       - .:/src
-      - /tmp/.X11-unix:/tmp/.X11-unix # - Linux
+      - $HOME/.Xauthority:/root/.Xauthority:rw # - Linux
     ports:
       - "3000:3000"
+    network_mode: "host"
   webserver:
     build: webserver
     volumes:
       - ./webserver:/src
     command: ./src/startwebserver
-  setupgui:
-    build: setupgui
-    volumes:
-      - ./setupgui:/setupgui
-    command: /bin/bash
-    ports:
-      - "8080:8080"
+  # webserver:
+  #   image: vulnerables/web-dvwa
+  # setupgui:
+  #   build: setupgui
+  #   volumes:
+  #     - ./setupgui:/setupgui
+  #   command: /bin/bash
+  #   ports:
+  #     - "8080:8080"

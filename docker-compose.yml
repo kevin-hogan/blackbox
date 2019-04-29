@@ -4,15 +4,14 @@ services:
     privileged: true
     environment:
       #- DISPLAY=host.docker.internal:0.0 - Windows
-      DISPLAY: # - Linux
+      - DISPLAY # - Linux
     build: .
     command: ./src/startblackbox
     volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix # - Linux
       - .:/src
-      - $HOME/.Xauthority:/root/.Xauthority:rw # - Linux
     ports:
       - "3000:3000"
-    network_mode: "host"
   webserver:
     build: webserver
     volumes:
@@ -20,6 +19,8 @@ services:
     command: ./src/startwebserver
   # webserver:
   #   image: vulnerables/web-dvwa
+  #   ports:
+  #     - "80:80"
   # setupgui:
   #   build: setupgui
   #   volumes:

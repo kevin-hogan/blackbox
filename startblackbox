@@ -20,7 +20,7 @@ while getopts ":d" opt; do
   esac
 done
 
-comm="xterm -e "
+comm="xterm -geometry +1100+350 -e "
 if [ "$debug_mode" = true ] ; then
     comm+="python -m ptvsd --host 0.0.0.0 --port 3000 "
 fi
@@ -30,8 +30,8 @@ $comm &
 # Starting Mininet
 
 service openvswitch-switch start
-xterm -e python2 src/start_mininet.py &
+xterm -geometry +600+350 -e python2 src/start_mininet.py &
 
 # Starting bash
 
-xterm -e /bin/bash
+xterm -geometry +100+350 -e /bin/bash

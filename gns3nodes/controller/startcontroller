@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./usr/local/bin/ryu-manager --verbose --enable-debugger src/snort_learning_switch.py

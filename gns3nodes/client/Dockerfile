@@ -4,3 +4,4 @@ RUN curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/conf
     > msfinstall \
     && chmod 755 msfinstall \
     && ./msfinstall
+RUN apt install net-tools

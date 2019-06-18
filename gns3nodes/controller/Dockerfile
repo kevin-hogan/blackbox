@@ -13,3 +13,4 @@ RUN python2 -m pip install --no-cache \
 RUN touch /etc/network/interfaces
 ADD snort_learning_switch.py /src/snort_learning_switch.py
 ADD startcontroller /src/startcontroller
+CMD sh -c "(./src/startcontroller &) && bash"

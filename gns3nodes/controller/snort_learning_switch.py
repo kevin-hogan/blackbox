@@ -31,6 +31,8 @@ from ryu.app.wsgi import ControllerBase
 # integration with Snort IDS. The integration code is derived from the
 # provided example in simple_switch_snort.py. (Referenced examples are available
 # here: https://github.com/osrg/ryu/tree/master/ryu/app).
+globalDatapath = None
+
 class SnortLearningSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
     _CONTEXTS = {'snortlib': snortlib.SnortLib, 'wsgi': WSGIApplication}
@@ -45,11 +47,8 @@ class SnortLearningSwitch(app_manager.RyuApp):
 
         wsgi = kwargs['wsgi']
         mapper = wsgi.mapper
-        path = '/firewall'
-        # for firewall status
-        uri = path + '/module/status'
-        mapper.connect('firewall', uri,
-                       controller=FirewallController, action='get_status',
+        mapper.connect('firewall', '/firewall/block',
+                       controller=FirewallController, action='block',
                        conditions=dict(method=['GET']))
 
     @set_ev_cls(snortlib.EventAlert, MAIN_DISPATCHER)
@@ -88,6 +87,7 @@ class SnortLearningSwitch(app_manager.RyuApp):
                                           ofproto.OFPCML_NO_BUFFER)]
         self.add_flow(datapath, 0, match, actions)
 
+    @classmethod
     def add_flow(self, datapath, priority, match, actions, buffer_id=None):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -111,6 +111,8 @@ class SnortLearningSwitch(app_manager.RyuApp):
                               ev.msg.msg_len, ev.msg.total_len)
         msg = ev.msg
         self.datapath = msg.datapath
+        global globalDatapath
+        globalDatapath = msg.datapath
         datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -163,6 +165,9 @@ class FirewallController(ControllerBase):
     def __init__(self, req, link, data, **config):
         super(FirewallController, self).__init__(req, link, data, **config)
 
-    # GET /firewall/module/status
-    def get_status(self, req, **_kwargs):
-        print("Hit the endpoint!")
+    # GET /firewall/block
+    def block(self, req, **_kwargs):
+        print("datapath: " + str(globalDatapath))
+        parser = globalDatapath.ofproto_parser
+        match = parser.OFPMatch(ipv4_src="192.168.0.5", eth_type=0x800)
+        SnortLearningSwitch.add_flow(globalDatapath, 2, match, [])

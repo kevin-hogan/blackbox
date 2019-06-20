@@ -23,6 +23,8 @@ from ryu.controller.handler import set_ev_cls
 from ryu.ofproto import ofproto_v1_3
 from ryu.lib.packet import packet, ether_types, ethernet, ipv4
 from ryu.lib import snortlib
+from ryu.app.wsgi import WSGIApplication
+from ryu.app.wsgi import ControllerBase
 
 
 # Modified version of Ryu's provided simple_switch_13.py that includes
@@ -31,7 +33,7 @@ from ryu.lib import snortlib
 # here: https://github.com/osrg/ryu/tree/master/ryu/app).
 class SnortLearningSwitch(app_manager.RyuApp):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
-    _CONTEXTS = {'snortlib': snortlib.SnortLib}
+    _CONTEXTS = {'snortlib': snortlib.SnortLib, 'wsgi': WSGIApplication}
 
     def __init__(self, *args, **kwargs):
         super(SnortLearningSwitch, self).__init__(*args, **kwargs)
@@ -40,6 +42,15 @@ class SnortLearningSwitch(app_manager.RyuApp):
         self.mac_to_port = {}
 
         self.datapath = None
+
+        wsgi = kwargs['wsgi']
+        mapper = wsgi.mapper
+        path = '/firewall'
+        # for firewall status
+        uri = path + '/module/status'
+        mapper.connect('firewall', uri,
+                       controller=FirewallController, action='get_status',
+                       conditions=dict(method=['GET']))
 
     @set_ev_cls(snortlib.EventAlert, MAIN_DISPATCHER)
     def dump_alert(self, ev):
@@ -146,3 +157,12 @@ class SnortLearningSwitch(app_manager.RyuApp):
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
                                   in_port=in_port, actions=actions, data=data)
         datapath.send_msg(out)
+
+class FirewallController(ControllerBase):
+
+    def __init__(self, req, link, data, **config):
+        super(FirewallController, self).__init__(req, link, data, **config)
+
+    # GET /firewall/module/status
+    def get_status(self, req, **_kwargs):
+        print("Hit the endpoint!")

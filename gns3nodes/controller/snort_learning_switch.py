@@ -47,7 +47,7 @@ class SnortLearningSwitch(app_manager.RyuApp):
 
         wsgi = kwargs['wsgi']
         mapper = wsgi.mapper
-        mapper.connect('firewall', '/firewall/block',
+        mapper.connect('firewall', '/firewall/block/{nodeip}',
                        controller=FirewallController, action='block',
                        conditions=dict(method=['GET']))
 
@@ -165,9 +165,8 @@ class FirewallController(ControllerBase):
     def __init__(self, req, link, data, **config):
         super(FirewallController, self).__init__(req, link, data, **config)
 
-    # GET /firewall/block
-    def block(self, req, **_kwargs):
-        print("datapath: " + str(globalDatapath))
+    # PUT /firewall/block/{nodeip}
+    def block(self, req, nodeip, **_kwargs):
         parser = globalDatapath.ofproto_parser
-        match = parser.OFPMatch(ipv4_src="192.168.0.5", eth_type=0x800)
+        match = parser.OFPMatch(ipv4_src=nodeip, eth_type=0x800)
         SnortLearningSwitch.add_flow(globalDatapath, 2, match, [])

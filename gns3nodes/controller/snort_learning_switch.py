@@ -165,7 +165,7 @@ class FirewallController(ControllerBase):
     def __init__(self, req, link, data, **config):
         super(FirewallController, self).__init__(req, link, data, **config)
 
-    # PUT /firewall/block/{nodeip}
+    # GET /firewall/block/{nodeip}
     def block(self, req, nodeip, **_kwargs):
         parser = globalDatapath.ofproto_parser
         match = parser.OFPMatch(ipv4_src=nodeip, eth_type=0x800)

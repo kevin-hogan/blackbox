@@ -21,10 +21,3 @@ services:
   #   image: vulnerables/web-dvwa
   #   ports:
   #     - "80:80"
-  # setupgui:
-  #   build: setupgui
-  #   volumes:
-  #     - ./setupgui:/setupgui
-  #   command: /bin/bash
-  #   ports:
-  #     - "8080:8080"

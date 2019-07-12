@@ -1,0 +1,15 @@
+Jul 08 16:40:40.896 HYPERVISOR: Release 0.2.20-amd64/Linux (tag 2019022012)
+Jul 08 16:40:40.896 HYPERVISOR: Started on IP = 127.0.0.1, TCP port = 44937.
+Jul 08 16:40:40.897 HYPERVISOR: exec_cmd: hypervisor version 
+Jul 08 16:40:40.898 HYPERVISOR: exec_cmd: hypervisor working_dir /home/kevin/GNS3/projects/blackbox/project-files/dynamips 
+Jul 08 16:40:40.898 GENERAL: working_dir=/home/kevin/GNS3/projects/blackbox/project-files/dynamips
+Jul 08 16:40:40.898 HYPERVISOR: exec_cmd: ethsw create Ethernetswitch-1 
+Jul 08 16:40:41.265 HYPERVISOR: exec_cmd: nio create_udp udp-4111f532-172e-4e34-a0a0-73507531a93c 10007 127.0.0.1 10006 
+Jul 08 16:40:41.265 HYPERVISOR: exec_cmd: ethsw add_nio Ethernetswitch-1 udp-4111f532-172e-4e34-a0a0-73507531a93c 
+Jul 08 16:40:41.281 HYPERVISOR: exec_cmd: ethsw set_access_port Ethernetswitch-1 udp-4111f532-172e-4e34-a0a0-73507531a93c 1 
+Jul 08 16:40:41.298 HYPERVISOR: exec_cmd: nio create_udp udp-7410abe1-6cf8-43af-961d-1b9b69f48808 10008 127.0.0.1 10009 
+Jul 08 16:40:41.298 HYPERVISOR: exec_cmd: ethsw add_nio Ethernetswitch-1 udp-7410abe1-6cf8-43af-961d-1b9b69f48808 
+Jul 08 16:40:41.302 HYPERVISOR: exec_cmd: ethsw set_access_port Ethernetswitch-1 udp-7410abe1-6cf8-43af-961d-1b9b69f48808 1 
+Jul 08 16:40:41.351 HYPERVISOR: exec_cmd: nio create_udp udp-876d274b-8a89-4655-9333-4599e53b3bb6 10013 127.0.0.1 10012 
+Jul 08 16:40:41.351 HYPERVISOR: exec_cmd: ethsw add_nio Ethernetswitch-1 udp-876d274b-8a89-4655-9333-4599e53b3bb6 
+Jul 08 16:40:41.362 HYPERVISOR: exec_cmd: ethsw set_access_port Ethernetswitch-1 udp-876d274b-8a89-4655-9333-4599e53b3bb6 1 

@@ -1,1 +1,0 @@
-alert tcp any any -> any 22 (msg: "ssh_attempt"; sid:10000001; rev:001; )

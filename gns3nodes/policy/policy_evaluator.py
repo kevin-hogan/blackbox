@@ -6,10 +6,11 @@ app = Flask(__name__)
 app.logger.setLevel(level=logging.INFO)
 
 CONTROLLER_IP = "10.0.0.3"
+PING_ALERT_MESSAGE = "ICMP PING"
 
-@app.route('/ids_alert', methods = ['GET'])
+@app.route('/ids_alert', methods = ['POST'])
 def config():
-    #confJson = json.loads(json.dumps(request.json))
-    print("Endpoint hit!")
-    requests.get(url = "http://" + CONTROLLER_IP + ":8080/firewall/block/192.168.0.5")
+    if PING_ALERT_MESSAGE in request.json["msg"]:
+        print("Firewalling " + request.json["src"])
+        requests.get(url = "http://" + CONTROLLER_IP + ":8080/firewall/block/" + request.json["src"])
     return ""

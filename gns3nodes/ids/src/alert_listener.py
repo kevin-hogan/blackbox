@@ -13,5 +13,5 @@ if __name__ == "__main__":
         src_ip = socket.inet_ntop(socket.AF_INET, eth.data.src)
         dst_ip = socket.inet_ntop(socket.AF_INET, eth.data.dst)
         alert_msg = ''.join(msg.alertmsg[0].decode("utf-8").replace("\x00", ""))
-        alert_dict = {"msg": alert_msg, "src": src_ip, "dst": dst_ip}
+        alert_dict = {"msg": alert_msg, "src": src_ip, "dst": dst_ip, "ts": msg.pkth.ts.tv_sec}
         requests.post(url = "http://" + POLICY_IP + ":8080/ids_alert", json = alert_dict)

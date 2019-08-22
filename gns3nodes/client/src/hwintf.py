@@ -1,12 +1,6 @@
-#!/usr/bin/python
-
-"""
-This example shows how to add an interface (for example a real
-hardware interface) to a network after the network is created.
-"""
-
 import re
 import sys
+import argparse
 
 from mininet.cli import CLI
 from mininet.log import setLogLevel, info, error
@@ -16,41 +10,43 @@ from mininet.topolib import TreeTopo
 from mininet.util import quietRun
 from mininet.node import OVSController
 
-def checkIntf( intf ):
-    "Make sure intf exists and is not configured."
-    config = quietRun( 'ifconfig %s 2>/dev/null' % intf, shell=True )
+def checkIntf(intf):
+    config = quietRun('ifconfig %s' % intf, shell=True)
     if not config:
-        error( 'Error:', intf, 'does not exist!\n' )
-        exit( 1 )
-    ips = re.findall( r'\d+\.\d+\.\d+\.\d+', config )
+        error('Error:', intf, 'does not exist!\n')
+        exit(1)
+    ips = re.findall(r'\d+\.\d+\.\d+\.\d+', config)
     if ips:
-        error( 'Error:', intf, 'has an IP address,'
-               'and is probably in use!\n' )
-        exit( 1 )
+        error('Error:', intf, 'has an IP address,'
+              'and is probably in use!\n')
+        exit(1)
+
 
 if __name__ == '__main__':
-    setLogLevel( 'info' )
+    setLogLevel('info')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i','--interface', help='Network interface to connect with', required=True)
+    parser.add_argument('-d','--depth', help='Depth of tree topology', type=int, required=True)
+    parser.add_argument('-f','--fanout', help='Fanout of tree topology', type=int, required=True)
+    args = parser.parse_args()
 
-    # try to get hw intf from the command line; by default, use eth1
-    intfName = sys.argv[ 1 ] if len( sys.argv ) > 1 else 'eth1'
-    info( '*** Connecting to hw intf: %s' % intfName )
+    intfName = args.interface
+    info('*** Connecting to hw intf: %s' % intfName + '\n')
 
-    info( '*** Checking', intfName, '\n' )
-    checkIntf( intfName )
+    info('*** Checking', intfName, '\n')
+    checkIntf(intfName)
 
-    info( '*** Creating network\n' )
-    net = Mininet( topo=TreeTopo( depth=1, fanout=2 ), controller=OVSController )
-    net.hosts[0].setIP("192.168.0.5")
-    net.hosts[1].setIP("192.168.0.6")
+    subnet = "192.168.0."
+    num_hosts = args.fanout ** args.depth
+    net = Mininet(topo=TreeTopo(depth=args.depth, fanout=args.fanout), controller=OVSController)
+    for host_index in range(num_hosts):
+        rightmost_bits = host_index % 256 + 5
+        net.hosts[host_index].setIP(subnet + str(rightmost_bits))
 
-    switch = net.switches[ 0 ]
-    info( '*** Adding hardware interface', intfName, 'to switch',
-          switch.name, '\n' )
-    _intf = Intf( intfName, node=switch )
-
-    info( '*** Note: you may need to reconfigure the interfaces for '
-          'the Mininet hosts:\n', net.hosts, '\n' )
+    switch = net.switches[0]
+    info('*** Adding hardware interface', intfName, 'to switch', switch.name, '\n')
+    _intf = Intf(intfName, node=switch)
 
     net.start()
-    CLI( net )
-net.stop()
+    CLI(net)
+    net.stop()

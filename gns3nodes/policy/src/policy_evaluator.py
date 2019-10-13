@@ -13,6 +13,5 @@ policies = [
 
 @app.route('/ids_alert', methods = ['POST'])
 def config():
-    request.json.update({"ts": time.time()})
     [p.process_event(request.json) for p in policies]
     return ""
